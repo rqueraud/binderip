@@ -5,7 +5,19 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y python3.9
 RUN apt-get install -y python3-pip
 
-##### Binder doc #####
+# Install mongodb
+RUN apt-get install -y wget gnupg
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
+RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+RUN apt-get update
+RUN apt-get install -y mongodb-org
+RUN ps --no-headers -o comm 1
+RUN mkdir /data/db -p
+
+COPY ./start.sh .
+CMD ["/bin/bash", "./start.sh"]
+
+# ##### Binder doc #####
 
 RUN python3.9 -m pip install --no-cache-dir notebook
 
@@ -24,6 +36,6 @@ RUN adduser --disabled-password \
 COPY . ${HOME}
 USER root
 RUN chown -R ${NB_UID} ${HOME}
-USER ${NB_USER}
+# USER ${NB_USER}
 
 ######################
