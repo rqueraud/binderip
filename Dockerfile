@@ -46,9 +46,10 @@ COPY ./start.sh .
 # COPY ./data ./data/
 COPY ./main.ipynb .
 RUN chown -R ${NB_UID} ${HOME}
+RUN chown -R ${NB_UID} /data/db
 
 # Start mongodb
 # RUN nohup bash -c "scripts/init.sh &"
 
 USER ${NB_USER}
-# ENTRYPOINT [ "bash", "start.sh"]
+ENTRYPOINT [ "bash", "-c", "bash start.sh && bash"]
