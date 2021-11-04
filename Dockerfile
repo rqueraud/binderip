@@ -37,15 +37,15 @@ USER root
 
 ######################
 
-WORKDIR /home/${NB_USER}
-COPY ./start.sh .
-COPY ./data ./data/
-COPY ./main.ipynb .
-RUN chown -R ${NB_UID} ${HOME}
-
 # Install tools
 RUN python3.9 -m pip install --no-cache-dir notebook pymongo pandas xmltodict
 RUN apt-get install -y htop
+
+WORKDIR /home/${NB_USER}
+COPY ./start.sh .
+# COPY ./data ./data/
+COPY ./main.ipynb .
+RUN chown -R ${NB_UID} ${HOME}
 
 # Start mongodb
 # RUN nohup bash -c "scripts/init.sh &"

@@ -1,4 +1,4 @@
-/usr/bin/mongod & 
+/usr/bin/mongod > /dev/null 2>&1 &
 
 su jovyan
 /bin/bash
