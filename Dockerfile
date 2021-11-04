@@ -43,4 +43,12 @@ COPY ./data ./data/
 COPY ./main.ipynb .
 RUN chown -R ${NB_UID} ${HOME}
 
-CMD ["/bin/bash", "./start.sh"]
+# Install tools
+RUN python3.9 -m pip install --no-cache-dir notebook pymongo pandas xmltodict
+RUN apt-get install -y htop
+
+# Start mongodb
+# RUN nohup bash -c "scripts/init.sh &"
+
+# USER ${NB_USER}
+ENTRYPOINT [ "bash", "start.sh"]
