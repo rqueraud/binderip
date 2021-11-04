@@ -14,9 +14,6 @@ RUN apt-get install -y mongodb-org
 RUN ps --no-headers -o comm 1
 RUN mkdir /data/db -p
 
-COPY ./start.sh .
-CMD ["/bin/bash", "./start.sh"]
-
 # ##### Binder doc #####
 
 RUN python3.9 -m pip install --no-cache-dir notebook
@@ -32,10 +29,16 @@ RUN adduser --disabled-password \
     --uid ${NB_UID} \
     ${NB_USER}
 
-# Make sure the contents of our repo are in ${HOME}
-COPY . ${HOME}
+# # Make sure the contents of our repo are in ${HOME}
+# COPY . ${HOME}
 USER root
 RUN chown -R ${NB_UID} ${HOME}
 # USER ${NB_USER}
 
 ######################
+
+WORKDIR /home/${NB_USER}
+COPY ./start.sh .
+COPY ./data ./data/
+COPY ./main.ipynb .
+CMD ["/bin/bash", "./start.sh"]
