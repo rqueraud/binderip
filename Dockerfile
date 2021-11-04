@@ -50,5 +50,5 @@ RUN chown -R ${NB_UID} ${HOME}
 # Start mongodb
 # RUN nohup bash -c "scripts/init.sh &"
 
-# USER ${NB_USER}
-ENTRYPOINT [ "bash", "start.sh"]
+USER ${NB_USER}
+# ENTRYPOINT [ "bash", "start.sh"]
