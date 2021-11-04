@@ -52,4 +52,3 @@ RUN chown -R ${NB_UID} /data/db
 # RUN nohup bash -c "scripts/init.sh &"
 
 USER ${NB_USER}
-ENTRYPOINT [ "bash", "-c", "bash start.sh && bash"]
