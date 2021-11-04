@@ -32,7 +32,7 @@ RUN adduser --disabled-password \
 # # Make sure the contents of our repo are in ${HOME}
 # COPY . ${HOME}
 USER root
-RUN chown -R ${NB_UID} ${HOME}
+# RUN chown -R ${NB_UID} ${HOME}
 # USER ${NB_USER}
 
 ######################
@@ -41,4 +41,6 @@ WORKDIR /home/${NB_USER}
 COPY ./start.sh .
 COPY ./data ./data/
 COPY ./main.ipynb .
+RUN chown -R ${NB_UID} ${HOME}
+
 CMD ["/bin/bash", "./start.sh"]
