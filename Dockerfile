@@ -20,11 +20,7 @@ RUN adduser --disabled-password \
     --uid ${NB_UID} \
     ${NB_USER}
 
-# # Make sure the contents of our repo are in ${HOME}
-# COPY . ${HOME}
 USER root
-# RUN chown -R ${NB_UID} ${HOME}
-# USER ${NB_USER}
 
 ######################
 
@@ -47,11 +43,8 @@ ENV ES_JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 ENV ES_JAVA_OPTS="-Xms256m -Xmx256m"
 
 WORKDIR /home/${NB_USER}
-# COPY ./start.sh .
-# COPY ./data ./data/
-COPY ./main.ipynb .
 COPY . ${HOME}
 RUN chown -R ${NB_UID} ${HOME}
-# RUN chown -R ${NB_UID} /data/db
+
 
 USER ${NB_USER}
