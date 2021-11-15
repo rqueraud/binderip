@@ -5,15 +5,6 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y python3.9
 RUN apt-get install -y python3-pip
 
-# Install mongodb
-RUN apt-get install -y wget gnupg
-RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
-RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list
-RUN apt-get update
-RUN apt-get install -y mongodb-org
-RUN ps --no-headers -o comm 1
-RUN mkdir /data/db -p
-
 # ##### Binder doc #####
 
 RUN python3.9 -m pip install --no-cache-dir notebook
@@ -38,17 +29,29 @@ USER root
 ######################
 
 # Install tools
-RUN python3.9 -m pip install --no-cache-dir notebook pymongo pandas xmltodict
-RUN apt-get install -y htop
+RUN python3.9 -m pip install --no-cache-dir notebook pymongo pandas xmltodict elasticsearch
+RUN apt-get install -y htop curl
+RUN apt-get update
+RUN apt-get install -y default-jre default-jdk
+
+# Install elasticsearch
+RUN apt-get install -y wget
+RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.15.2-linux-x86_64.tar.gz
+RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.15.2-linux-x86_64.tar.gz.sha512
+RUN shasum -a 512 -c elasticsearch-7.15.2-linux-x86_64.tar.gz.sha512 
+RUN tar -xzf elasticsearch-7.15.2-linux-x86_64.tar.gz
+RUN cd elasticsearch-7.15.2/ 
+RUN mv elasticsearch-7.15.2/ /home/${NB_USER}/
+
+ENV ES_JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV ES_JAVA_OPTS="-Xms256m -Xmx256m"
 
 WORKDIR /home/${NB_USER}
-COPY ./start.sh .
+# COPY ./start.sh .
 # COPY ./data ./data/
 COPY ./main.ipynb .
+COPY . ${HOME}
 RUN chown -R ${NB_UID} ${HOME}
-RUN chown -R ${NB_UID} /data/db
-
-# Start mongodb
-# RUN nohup bash -c "scripts/init.sh &"
+# RUN chown -R ${NB_UID} /data/db
 
 USER ${NB_USER}
